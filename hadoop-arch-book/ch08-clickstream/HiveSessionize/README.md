@@ -1,0 +1,4 @@
+HiveSessionize
+==============
+
+Sessionization in Hive
