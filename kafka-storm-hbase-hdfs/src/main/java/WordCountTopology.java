@@ -1,5 +1,6 @@
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
+import org.apache.storm.StormSubmitter;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.utils.Utils;
@@ -28,15 +29,22 @@ public class WordCountTopology {
         builder.setBolt(REPORT_BOLT_ID, reportBolt).globalGrouping(COUNT_BOLT_ID);
         
         Config config = new Config();
-        logger.info("new LocalCluster");
-        LocalCluster cluster = new LocalCluster();
-        
-        logger.info("Before sumbitTopology");
-        cluster.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());
-        logger.debug("After sumbitTopology");
-        Utils.sleep(10000);
-        cluster.killTopology(TOPOLOGY_NAME);
-        cluster.shutdown();
-        
+		config.setDebug(false);
+		
+		if (args.length > 0 ){
+			config.setNumWorkers(2);
+			
+			StormSubmitter.submitTopology(args[0], config, builder.createTopology());			
+		} else {
+	        logger.info("new LocalCluster");
+	        LocalCluster cluster = new LocalCluster();
+	        
+	        logger.info("Before sumbitTopology");
+	        cluster.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());
+	        logger.debug("After sumbitTopology");
+	        Utils.sleep(10000);
+	        cluster.killTopology(TOPOLOGY_NAME);
+	        cluster.shutdown();		
+		}        
     }
 }

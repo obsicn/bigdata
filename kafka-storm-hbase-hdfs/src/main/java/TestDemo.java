@@ -14,7 +14,7 @@ public class TestDemo {
 		String words[];
 		Values t;
 		
-		logger.info("In main");
+		logger.info("In main:" + args.length);
 	
 		for(int index = 0; index < sentences.length; index++){
 			words = sentences[index].split(" ");
