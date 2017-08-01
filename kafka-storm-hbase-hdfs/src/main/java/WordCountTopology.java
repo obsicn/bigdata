@@ -32,8 +32,7 @@ public class WordCountTopology {
 		config.setDebug(false);
 		
 		if (args.length > 0 ){
-			config.setNumWorkers(2);
-			
+			config.setNumWorkers(6);
 			StormSubmitter.submitTopology(args[0], config, builder.createTopology());			
 		} else {
 	        logger.info("new LocalCluster");
