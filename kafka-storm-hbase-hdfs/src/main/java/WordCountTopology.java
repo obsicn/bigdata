@@ -6,6 +6,9 @@ import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.hbase.bolt.HBaseBolt;
 import org.apache.storm.hbase.bolt.mapper.SimpleHBaseMapper;
+import org.apache.storm.kafka.spout.KafkaSpout;
+import org.apache.storm.kafka.spout.KafkaSpoutConfig;
+import org.apache.storm.kafka.spout.KafkaSpoutConfig.Builder;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.utils.Utils;
@@ -45,8 +48,12 @@ public class WordCountTopology {
 //        HBaseBolt hbaseBolt = new HBaseBolt("WordCount", mapper)
 //                .withConfigKey("hbase.conf");
         
+        KafkaSpoutConfig kConfig = KafkaSpoutConfig.builder("data-srv003:9092", "wordcount").setGroupId("test-consumer-group").build();
+        
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout(SENTENCE_SPOUT_ID, spout);
+        builder.setSpout(SENTENCE_SPOUT_ID, new KafkaSpout<>(KafkaSpoutConfig.builder("data-srv003:9092", "wordcount").build()), 1);
+        
+
         builder.setBolt(SPLIT_BOLT_ID, splitBolt).shuffleGrouping(SENTENCE_SPOUT_ID);
         builder.setBolt(COUNT_BOLT_ID, countBolt).fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
         builder.setBolt(SORT_BOLT_ID, sortBolt).globalGrouping(COUNT_BOLT_ID);
