@@ -1,3 +1,4 @@
+package tools;
 
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class SplitSentenceBolt extends BaseRichBolt {
                                                                 // 的列表List<Map<sentence,String>>
         String[] words = sentence.split(" ");// 将字符串分解成一个个的单词
         for (String word : words)
-            this.collector.emit(new Values(word));// 将每个单词构造成tuple并发送给下一个Bolt
+            this.collector.emit(new Values(word));// 将每个单词构造成tuple并发送给下一个Spout
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

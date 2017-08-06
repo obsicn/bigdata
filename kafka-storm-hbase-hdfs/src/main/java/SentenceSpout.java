@@ -18,9 +18,8 @@ public class SentenceSpout extends BaseRichSpout {
      */
     private static final long serialVersionUID = 3444934973982660864L;
     private SpoutOutputCollector collector;// 用来向其他Spout发射tuple
-    private String[] sentences = { "my dog has fleas", "i like cold beverages",
-            "the dog ate my homework", "don't have a cow man",
-            "i don't think i like fleas" };
+    private String[] sentences = { "Hello Storm", "Hello Kafka",
+            "Hello HBase", "Hello HDFS" };
 
     private int index = 0;
 
