@@ -35,6 +35,7 @@ public class WordCountBolt extends BaseRichBolt{
         this.counts.put(word, count);//更新该单词在HashMap中的统计次数
         //此处发射的tuple包含了两个元素:单词和计数，它每次发送的是一个长度为2的List，
         //可理解为：List.add(new HashMap("word",word)); List.add(new HashMap(("count",count));
+        System.out.println(word + ":" + count.toString());
         this.collector.emit(new Values(word, count));//第一个元素的键为 "word"，值为该单词(a string)，第二个键为 "count",值为单词的计数
     }
 

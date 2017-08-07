@@ -8,14 +8,19 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 public class WordCountClient {
 	
-	public static final String[] words = new String[] { "cold", "dog", "has"};
+	public static final String[] words = new String[] { "Hello", "Storm", "HDFS", "Kafka", "HBase"};
 	
     public static void main(String[] args) throws Exception {
         Configuration config = HBaseConfiguration.create();
         config.set("hbase.rootdir", "hdfs://data-srv001:8020/hbase");
+        
+        config.set("hbase.zookeeper.quorum","data-srv003,data-srv004,data-srv005");
+        
+        config.set("hbase.master", "data-srv001:60000");
 
         HTable table = new HTable(config, "WordCount");
 
+        
         for (String word : words) {
             Get get = new Get(Bytes.toBytes(word));
             Result result = table.get(get);

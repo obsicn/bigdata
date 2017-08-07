@@ -55,7 +55,7 @@ public class SentenceSpout extends BaseRichSpout {
      */
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         // TODO Auto-generated method stub
-        declarer.declare(new Fields("sentence"));// 标记SentenceSpout发送的tuple的键为
+        declarer.declare(new Fields("value"));// 标记SentenceSpout发送的tuple的键为
                                                     // sentence
     }
 }

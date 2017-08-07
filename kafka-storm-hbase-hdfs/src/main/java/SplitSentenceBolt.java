@@ -31,13 +31,15 @@ public class SplitSentenceBolt extends BaseRichBolt {
     public void execute(Tuple input) {
         // TODO Auto-generated method stub
         // 接收从SentenceSpout的发射器发射过来的tuple,因为SentenceSpout中声明的tuple字段为sentence,故getStringByField方法的参数为sentence
-        String sentence = input.getStringByField("sentence");// 该tuple是一个包含
+        String sentence = input.getStringByField("value");// 该tuple是一个包含
                                                                 // 键为sentence
                                                                 // 值为字符串
                                                                 // 的列表List<Map<sentence,String>>
         String[] words = sentence.split(" ");// 将字符串分解成一个个的单词
         for (String word : words)
-            this.collector.emit(new Values(word));// 将每个单词构造成tuple并发送给下一个Bolt
+        	if (word.length() != 0){
+        		this.collector.emit(new Values(word));// 将每个单词构造成tuple并发送给下一个Bolt
+        	}
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

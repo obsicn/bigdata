@@ -2,12 +2,21 @@ package tools;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.storm.tuple.Tuple;
 
 public class TestDemo {
-	private static String[] sentences = {"hello world", 
-			"hello storm"};	
+	private static String[] sentences = {"hello world  ", 
+			""};	
+	
+	
 	Tuple t1;
+	
+	Map map=new HashMap<String, String>();
+	
 	
 	private final static Logger logger = LoggerFactory.getLogger(TestDemo.class);
 	
@@ -15,17 +24,17 @@ public class TestDemo {
 		String words[];
 		Values t;
 		
+
+		
 		logger.info("In main:" + args.length);
-	
-		for(int index = 0; index < sentences.length; index++){
-			words = sentences[index].split(" ");
-			System.out.println(new Values(sentences[index].toString()));
-			for(int i = 0; i < words.length; i++){
-				t = new Values(words[i]);
-				System.out.println(t.toString());
-			}
-		}
-		System.out.println("hello world");
+		
+       words = sentences[0].split(" ");// 将字符串分解成一个个的单词
+        for (String word : words)
+        	System.out.println("Word:" + word + "!");
+        
+        words = sentences[1].split(" ");// 将字符串分解成一个个的单词
+        for (String word : words)
+        	System.out.println("Word:" + word + "!");
 	}
 
 }

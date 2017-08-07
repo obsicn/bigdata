@@ -32,6 +32,11 @@ public class WordCountTopology {
 		
         Map<String, Object> hbConf = new HashMap<String, Object>();
         hbConf.put("hbase.rootdir", "hdfs://data-srv001:8020/hbase");
+        
+        hbConf.put("hbase.zookeeper.quorum","data-srv003,data-srv004,data-srv005");
+        
+        hbConf.put("hbase.master", "data-srv001:60000");
+
         config.put("hbase.conf", hbConf);
         
         SentenceSpout spout = new SentenceSpout();
@@ -44,20 +49,23 @@ public class WordCountTopology {
 //                .withColumnFields(new Fields("word"))
 //                .withCounterFields(new Fields("count"))
 //                .withColumnFamily("cf");
-//
-//        HBaseBolt hbaseBolt = new HBaseBolt("WordCount", mapper)
-//                .withConfigKey("hbase.conf");
+        
+        MyHBaseMapper mapper = new MyHBaseMapper();
+
+        HBaseBolt hbaseBolt = new HBaseBolt("WordCount", mapper)
+                .withConfigKey("hbase.conf");
         
         KafkaSpoutConfig kConfig = KafkaSpoutConfig.builder("data-srv003:9092", "wordcount").setGroupId("test-consumer-group").build();
         
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout(SENTENCE_SPOUT_ID, new KafkaSpout<>(KafkaSpoutConfig.builder("data-srv003:9092", "wordcount").build()), 1);
+        builder.setSpout(SENTENCE_SPOUT_ID, new KafkaSpout<>(kConfig), 1);
+ //       builder.setSpout(SENTENCE_SPOUT_ID, spout);
         
 
         builder.setBolt(SPLIT_BOLT_ID, splitBolt).shuffleGrouping(SENTENCE_SPOUT_ID);
         builder.setBolt(COUNT_BOLT_ID, countBolt).fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
-        builder.setBolt(SORT_BOLT_ID, sortBolt).globalGrouping(COUNT_BOLT_ID);
-//        builder.setBolt(HBASE_BOLT_ID,  hbaseBolt).fieldsGrouping(COUNT_BOLT_ID, new Fields("word"));
+ //       builder.setBolt(SORT_BOLT_ID, sortBolt).globalGrouping(COUNT_BOLT_ID);
+        builder.setBolt(HBASE_BOLT_ID,  hbaseBolt).fieldsGrouping(COUNT_BOLT_ID, new Fields("word"));
         
 		
 		if (args.length > 0 ){
